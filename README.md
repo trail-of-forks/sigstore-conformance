@@ -8,6 +8,26 @@ sigstore-conformance
 
 `sigstore-conformance` is a conformance testing suite for Sigstore clients.
 
+An official Sigstore client specification is being worked on at the moment as
+part of the [Sigstore Architecture Documentation](https://github.com/sigstore/architecture-docs).
+Once it's complete, `sigstore-conformance` aims to be able to test a client's
+adherence to the specification.
+
+## Test suites
+
+`sigstore-conformance` contains both "flow-based" tests and "test-vector" tests.
+Broadly speaking, flow-based tests are analogous to end-to-end tests and vector
+tests are analogous to unit tests. The differences between the two are outlined
+in the table below.
+
+| | Flow-based | Vector |
+| --- | ---------- | ------ |
+| Test interface | CLI | API |
+| Goal | Test user workflows | Test conformance to specification |
+| Target | Entire client | Components of client that send or receive Sigstore messages |
+
+### Flow-based
+
 This suite provides a high-level view of client behaviour as a whole and sets
 out to answer questions such as:
 - Does the client fail when given a signing certificate that isn't signed by
@@ -18,11 +38,6 @@ out to answer questions such as:
   part of the Fulcio response in the signing workflow?
 - etc
 
-An official Sigstore client specification is being worked on at the moment as
-part of the [Sigstore Architecture Documentation](https://github.com/sigstore/architecture-docs).
-Once it's complete, `sigstore-conformance` aims to be able to test a client's
-adherence to the specification.
-
 Some general testing principles for this suite are:
 - *Tests should be "workflow" focused.* This testing suite is not about fuzzing
   every possible input to the client CLI or achieving code coverage.
@@ -31,6 +46,22 @@ Some general testing principles for this suite are:
   Sigstore infrastructure such as Rekor, Fulcio, etc. These tests should run
   against Sigstore staging and production infrastructure as well as custom built
   mock services to test atypical scenarios.
+
+### Vector
+
+This suite provides a granular look at client behavior. Specifically, it should
+answer questions such as:
+- How well does the client adhere to the specification?
+- Does the client correctly accept well-formed edge-case input?
+- Does the client correctly reject malformed input?
+- etc
+
+Some general testing principles for this suite are:
+- *Tests should target specific components.* This testing suite is not meant to
+  exercise the whole client in tandem, but rather individual subsystems and
+  their responses to input vectors.
+- *Tests should be lightweight.* Similar to the previous principle, we aim to
+  scope these tests as restrictively as possible to enable fuzzing.
 
 ## Usage
 
