@@ -1,4 +1,5 @@
 import functools
+import hashlib
 import json
 import os
 import shutil
@@ -22,8 +23,8 @@ from .client import (
 )
 
 _M = TypeVar("_M", bound=VerificationMaterials)
-_MakeMaterialsByType = Callable[[str, _M], tuple[Path, _M]]
-_MakeMaterials = Callable[[str], tuple[Path, VerificationMaterials]]
+_MakeMaterialsByType = Callable[[str, _M], tuple[Path, str, _M]]
+_MakeMaterials = Callable[[str], tuple[Path, str, VerificationMaterials]]
 
 _OIDC_BEACON_API_URL = (
     "https://api.github.com/repos/sigstore-conformance/extremely-dangerous-public-oidc-beacon/"
@@ -178,11 +179,14 @@ def make_materials_by_type() -> _MakeMaterialsByType:
 
     def _make_materials_by_type(
         input_name: str, cls: VerificationMaterials
-    ) -> tuple[Path, VerificationMaterials]:
+    ) -> tuple[Path, str, VerificationMaterials]:
         input_path = Path(input_name)
         output = cls.from_input(input_path)
 
-        return (input_path, output)
+        with open(input_path, "rb") as f:
+            digest = f"sha256:{hashlib.sha256(f.read()).hexdigest()}"
+
+        return (input_path, digest, output)
 
     return _make_materials_by_type
 

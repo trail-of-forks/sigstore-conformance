@@ -1,6 +1,6 @@
 import pytest  # type: ignore
 
-from test.conftest import _MakeMaterials, identity_token
+from test.conftest import _MakeMaterials
 
 from .client import SigstoreClient
 
@@ -13,7 +13,7 @@ def test_simple(client: SigstoreClient, make_materials: _MakeMaterials) -> None:
     client.
     """
 
-    input_path, materials = make_materials("a.txt")
+    input_path, _, materials = make_materials("a.txt")
     assert not materials.exists()
 
     # Sign the artifact.

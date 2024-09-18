@@ -14,7 +14,7 @@ def test_verify_empty(client: SigstoreClient, make_materials: _MakeMaterials) ->
     Tests that verification fails with empty artifacts, certificates and
     signatures.
     """
-    artifact_path, materials = make_materials("a.txt")
+    artifact_path, _, materials = make_materials("a.txt")
 
     assert artifact_path.exists()
     assert not materials.exists()
@@ -42,7 +42,7 @@ def test_verify_mismatch(client: SigstoreClient, make_materials: _MakeMaterials)
     Tests that verification fails with mismatching artifacts, certificates and
     signatures.
     """
-    a_artifact_path, a_materials = make_materials("a.txt")
+    a_artifact_path, _, a_materials = make_materials("a.txt")
 
     assert a_artifact_path.exists()
     assert not a_materials.exists()
@@ -52,7 +52,7 @@ def test_verify_mismatch(client: SigstoreClient, make_materials: _MakeMaterials)
     assert a_materials.exists()
 
     # Sign b.txt.
-    b_artifact_path, b_materials = make_materials("b.txt")
+    b_artifact_path, _, b_materials = make_materials("b.txt")
 
     client.sign(b_materials, b_artifact_path)
     assert b_materials.exists()
@@ -73,8 +73,8 @@ def test_verify_sigcrt(
     Test cases for the signature+certificate flow: empty sigs/crts and
     mismatched sigs/crts.
     """
-    a_artifact_path, a_materials = make_materials_by_type("a.txt", SignatureCertificateMaterials)
-    b_artifact_path, b_materials = make_materials_by_type("b.txt", SignatureCertificateMaterials)
+    a_artifact_path, _, a_materials = make_materials_by_type("a.txt", SignatureCertificateMaterials)
+    b_artifact_path, _, b_materials = make_materials_by_type("b.txt", SignatureCertificateMaterials)
 
     # Sign a.txt, b.txt.
     client.sign(a_materials, a_artifact_path)
