@@ -14,6 +14,8 @@ jobs:
     strategy:
       matrix:
         sigstore-env: [production, staging]
+        # Test both the latest 3.x release and the latest `main`
+        sigstore-python-version: ["sigstore ~= 3.0", "git+git@github.com:sigstore/sigstore-python.git"]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +27,7 @@ jobs:
           cache: "pip"
 
       - name: install sigstore-python
-        run: pip install "sigstore ~= 3.0"
+        run: pip install "${{ matrix.sigstore-python-version }}"
 
       - name: conformance test sigstore-python
         uses: ./
